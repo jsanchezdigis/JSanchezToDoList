@@ -1,0 +1,111 @@
+﻿@model ML.Tarea
+@{
+    ViewData["Title"] = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center">Agregar Nueva Tarea</h2>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            @using (Html.BeginForm("Form", "Tarea", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-horizontal">
+                    @if (Model != null)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.IdTarea, new { @class = "visually-hidden" })
+                                @Html.TextBoxFor(model => model.IdTarea, new { @class = "visually-hidden form-control" })
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Titulo)
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-list"></i></span>
+                                @Html.TextBoxFor(model => model.Titulo, new { @class = "form-control", @autocomplete = "false" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Descripcion)
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-list"></i></span>
+                                @Html.TextBoxFor(model => model.Descripcion, new { @class = "form-control", @autocomplete = "false" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.FechaVencimiento)
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-list"></i></span>
+                                @Html.TextBoxFor(model => model.FechaVencimiento, new { @class = "form-control readonly1", @type = "date", @min = "2024-01-01", @max = "2050-01-01" })
+                            </div>
+                        </div>
+
+                        @if(Model.Estado >= 0)
+                        {
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.Estado)
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-list"></i></span>
+                                    @Html.DropDownListFor(model => model.Estado,
+                                             new List<SelectListItem>
+                            {
+                            new SelectListItem { Text = "Pendiente", Value = "0" },
+                            new SelectListItem { Text = "Completado", Value = "1" }
+                            },
+                                             new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a><input type="submit" value="Guardar" class="btn btn-success col-md-12" id="xlsx" /></a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="@Url.Action("GetAll","Tarea")"><input type="button" value="Cancelar" class="btn btn-danger col-md-12" id="txt" /></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+        $(".readonly1").keydown(function (e) {
+            e.preventDefault();
+        });
+
+        var fechaVencimientoString = '@Model.FechaVencimiento';
+
+        var fechaVencimientoISO = new Date(fechaVencimientoString.split('/').reverse().join('-'));
+
+        var formattedFecha = fechaVencimientoISO.toISOString().slice(0, 10);
+
+        $(".readonly1").val(formattedFecha);
+    </script>
+}
+
